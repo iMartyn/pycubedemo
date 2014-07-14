@@ -83,12 +83,15 @@ class Pattern(object):
         for z in range(0,cubesize):
             for x in range(0,cubesize):
                 for y in range(0,cubesize):
-                    plane = self.position
+                    plane = self.position - z
+                    while plane > 3:
+                        plane -= 4
+                    while plane < 0:
+                        plane += 4
+                    print(z,plane)
                     if PATTERNS[plane][x,y] > 0:
                         self.cube.set_pixel((x,z,y),color_from_val(self.colorpoint-(z*(255/cubesize))))
         self.position += 1
-        if self.position > 3:
-            self.position = 0
         self.colorpoint += cubesize+1
         if self.colorpoint > 255:
             self.colorpoint = 0
