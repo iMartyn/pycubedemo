@@ -47,10 +47,9 @@ PATTERN3 = numpy.array([
     [ 0.,  0.,  0.,  0.,  0.,  1.,  0.,  0.],
     [ 0.,  0.,  0.,  1.,  1.,  1.,  0.,  0.]])
 
+PATTERNCOUNT = 3
 PATTERNS = numpy.array([PATTERN0,PATTERN1,PATTERN2,PATTERN3])
-
-INITIAL_ENERGY = 1.0
-MINSIZE = 4
+STEP = 2
 
 def color_from_val(val):
     while val < 0:
@@ -75,7 +74,9 @@ class Pattern(object):
     def init(self):
         self.position = 0
         self.colorpoint = 0
-        return 0.25
+        FPS = 2
+        CALLEDPERSEC = 1./FPS
+        return CALLEDPERSEC
 
     def tick(self):
         self.cube.clear()
@@ -83,15 +84,17 @@ class Pattern(object):
         for z in range(0,cubesize):
             for x in range(0,cubesize):
                 for y in range(0,cubesize):
-                    plane = self.position - z
-                    while plane > 3:
-                        plane -= 4
+                    offset = z//STEP
+                    plane = self.position - offset
+                    if plane > PATTERNCOUNT:
+                        plane = plane % PATTERNCOUNT
                     while plane < 0:
-                        plane += 4
-                    print(z,plane)
+                        plane += PATTERNCOUNT+1
                     if PATTERNS[plane][x,y] > 0:
                         self.cube.set_pixel((x,z,y),color_from_val(self.colorpoint-(z*(255/cubesize))))
         self.position += 1
+        if self.position > cubesize:
+            self.position -= cubesize
         self.colorpoint += cubesize+1
         if self.colorpoint > 255:
             self.colorpoint = 0
