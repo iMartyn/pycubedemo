@@ -6,10 +6,19 @@ import cubehelper
 import font
 import random
 import math
+import argparse
 
 class Pattern(object):
-    def init(self):
+    def init(self,args = None):
         self.message = 'Hello World'
+        self.color = -1
+        if (args is not None) and (args.message is not None):
+            self.message = args.message
+            color_mapping = [ ('#red', 0xff0000), ('#green', 0x00ff00), ('#blue', 0x0000ff), ('#white', 0xffffff) ]
+            for hashtag, color in color_mapping:
+                if hashtag in self.message:
+                    self.message = self.message.replace(hashtag, '')
+                    self.color = color
         self.position = 0
         self.double_buffer = True
         return 0.5 / self.cube.size
@@ -25,7 +34,8 @@ class Pattern(object):
                 self.data = font.font_data[n]
             else:
                 self.data = ()
-            self.color = cubehelper.random_color()
+            if self.color == -1:
+                self.color = cubehelper.random_color()
         x = (self.cube.size - len(self.data)) // 2
         y = self.position
         for mask in self.data:

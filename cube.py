@@ -41,8 +41,8 @@ def load_patterns(cube, match):
         return itertools.cycle(ordered)
 
 # Returns true to quit
-def run_pattern(cube, pattern):
-    interval = pattern.init()
+def run_pattern(cube, pattern, args):
+    interval = pattern.init(args)
     try:
         db = pattern.double_buffer
     except:
@@ -99,6 +99,8 @@ ap.add_argument('-f', '--frames', action='store_true', default=False,
         help="Display framerate")
 ap.add_argument('-n', '--noloop', action='store_true', default=False,
 	help="Run selected pattern(s) only once, don't loop through them")
+ap.add_argument('-m', '--message', type=str,
+        help="Message to display (some patterns)")
 args = ap.parse_args()
 
 debug_frames = args.frames
@@ -132,7 +134,7 @@ else:
 patterns = load_patterns(c, plist)
 try:
     for p in patterns:
-        run_pattern(c, p)
+        run_pattern(c, p, args)
 except KeyboardInterrupt:
     pass
 c.single_buffer()
